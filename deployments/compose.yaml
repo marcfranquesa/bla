@@ -15,6 +15,7 @@ services:
     depends_on:
       - db
     environment:
+      PORT: 8080
       MYSQL_DATABASE: bla
       MYSQL_USER: user_name
       MYSQL_PASSWORD: user_password

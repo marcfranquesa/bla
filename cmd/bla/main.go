@@ -1,17 +1,30 @@
 package main
 
 import (
-	"fmt"
-	"github.com/marcfranquesa/bla/pkg/db"
+	"github.com/marcfranquesa/bla/pkg/routes"
+	"log"
 	"net/http"
+	"os"
+	"strconv"
 )
 
 func main() {
-    conn, _ := db.Connect()
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		results, _ := db.UrlById(conn, "43")
-		fmt.Fprint(w, results)
-	})
+	port := getPort()
 
-	http.ListenAndServe(":8080", nil)
+	routes.SetupRoutes()
+
+	log.Printf("Starting server on port %s", port)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
+		log.Fatalf("Could not start server: %v", err)
+	}
+}
+
+func getPort() string {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	} else if _, err := strconv.Atoi(port); err != nil {
+		log.Fatalf("Invalid port value %s: %v", port, err)
+	}
+	return port
 }

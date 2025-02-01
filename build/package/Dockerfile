@@ -13,7 +13,6 @@ FROM alpine:latest
 WORKDIR /
 
 COPY --from=builder /app/bla .
-
-EXPOSE 8080
+COPY --from=builder /app/web/ /web/
 
 CMD ["./bla"]
