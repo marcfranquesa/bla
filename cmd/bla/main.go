@@ -12,8 +12,8 @@ import (
 func main() {
 	port := getPort()
 
-	conn, _ := db.Connect()
-	routes.SetupRoutes(conn)
+	db.Connect()
+	routes.SetupRoutes()
 
 	log.Printf("Starting server on port %s", port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
