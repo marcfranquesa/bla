@@ -1,4 +1,4 @@
-CMD := ./cmd
+CMD := ./cmd/bla
 BINARY := bla.o
 
 all: run_build

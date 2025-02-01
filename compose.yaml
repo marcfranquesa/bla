@@ -1,0 +1,26 @@
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example_password
+      MYSQL_DATABASE: bla
+      MYSQL_USER: user_name
+      MYSQL_PASSWORD: user_password
+      MYSQL_TCP_PORT: 3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init/db:/docker-entrypoint-initdb.d
+  bla:
+    build: .
+    depends_on:
+      - db
+    environment:
+      MYSQL_DATABASE: bla
+      MYSQL_USER: user_name
+      MYSQL_PASSWORD: user_password
+      MYSQL_ADDRESS: "db:3306"
+    ports:
+      - "8080:8080"
+
+volumes:
+  mysql_data:
