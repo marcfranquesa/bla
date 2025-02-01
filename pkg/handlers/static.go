@@ -12,8 +12,7 @@ func ServeStaticFiles() http.Handler {
 		log.Fatalf("Failed to get absolute path to web directory: %v", err)
 	}
 
-    log.Printf("Serving static files from: %s", webDir)
+	log.Printf("Serving static files from: %s", webDir)
 
 	return http.FileServer(http.Dir(webDir))
 }
-

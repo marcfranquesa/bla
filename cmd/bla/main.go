@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/marcfranquesa/bla/pkg/db"
 	"github.com/marcfranquesa/bla/pkg/routes"
 	"log"
 	"net/http"
@@ -11,7 +12,8 @@ import (
 func main() {
 	port := getPort()
 
-	routes.SetupRoutes()
+	conn, _ := db.Connect()
+	routes.SetupRoutes(conn)
 
 	log.Printf("Starting server on port %s", port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {

@@ -1,18 +1,18 @@
 package routes
 
 import (
+	"database/sql"
+	"fmt"
+	"github.com/marcfranquesa/bla/pkg/db"
 	"github.com/marcfranquesa/bla/pkg/handlers"
 	"net/http"
 )
 
-func SetupRoutes() {
+func SetupRoutes(conn *sql.DB) {
 	http.Handle("/", handlers.ServeStaticFiles())
-}
 
-//    conn, _ := db.Connect()
-// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-// 	results, _ := db.UrlById(conn, "43")
-// 	fmt.Fprint(w, results)
-// })
-//
-// http.ListenAndServe(":" + os.Getenv("PORT"), nil)
+	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		results, _ := db.UrlById(conn, "43")
+		fmt.Fprint(w, results)
+	})
+}
