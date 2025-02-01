@@ -10,12 +10,12 @@ test:
 	@go test ./...
 
 build:
-	@go build -o=/tmp/bin/${BINARY} ${CMD}
+	@go build -o=./bin/${BINARY} ${CMD}
 
 run:
 	@go run ${CMD}
 
 run_build: build
-	@/tmp/bin/${BINARY}
+	@./bin/${BINARY}
 
 .PHONY: all format build run run_build test
