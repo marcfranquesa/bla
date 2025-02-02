@@ -35,10 +35,7 @@ func Connect() error {
 
 func AddUrl(url URL) error {
 	_, err := conn.Exec("INSERT INTO urls (id, url) VALUES (?, ?)", url.Id, url.Url)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func UrlByID(id string) (URL, error) {

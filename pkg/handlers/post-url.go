@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/marcfranquesa/bla/pkg/db"
 	"github.com/marcfranquesa/bla/pkg/utils"
+	"log"
 	"net/http"
 )
 
@@ -28,10 +29,10 @@ func PostUrl(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(getResponse(request))
+	json.NewEncoder(w).Encode(getResponse(request.Url))
 }
 
-func getResponse(request Request) Response {
+func getResponse(url string) Response {
 	failureResponse := Response{
 		Message: "Unable to shorten URL",
 		Status:  "failure",
@@ -42,10 +43,12 @@ func getResponse(request Request) Response {
 		return failureResponse
 	}
 
-	err = db.AddUrl(db.URL{Id: id, Url: request.Url})
+	err = db.AddUrl(db.URL{Id: id, Url: url})
 	if err != nil {
+		log.Printf("Failed to add URL '%s': %v.", url, err)
 		return failureResponse
 	}
+	log.Printf("Added URL '%s' with ID '%s'.", url, id)
 
 	domain := utils.GetDomain()
 	return Response{
