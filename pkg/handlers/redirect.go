@@ -21,7 +21,7 @@ func Redirect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	url, _ := db.UrlById(id)
+	url, _ := db.UrlByID(id)
 
 	http.Redirect(w, r, url.Url, http.StatusFound)
 }

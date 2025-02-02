@@ -41,9 +41,23 @@ func AddUrl(url URL) error {
 	return nil
 }
 
-func UrlById(id string) (URL, error) {
+func UrlByID(id string) (URL, error) {
 	var url URL
 	row := conn.QueryRow("SELECT * FROM urls WHERE id = ?", id)
 	err := row.Scan(&url.Id, &url.Url)
 	return url, err
+}
+
+func IDExists(id string) (bool, error) {
+	rows, err := conn.Query("SELECT 1 FROM urls WHERE id = ?", id)
+	if err != nil {
+		return false, err
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		return true, nil
+	}
+
+	return false, nil
 }

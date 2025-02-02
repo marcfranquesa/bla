@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/marcfranquesa/bla/pkg/db"
+	"github.com/marcfranquesa/bla/pkg/utils"
 	"net/http"
-	"strings"
 )
 
 type Request struct {
@@ -16,21 +18,52 @@ type Response struct {
 }
 
 func PostUrl(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
-
-	parts := strings.Split(path, "/")
-	if len(parts) > 3 {
-		http.Error(w, "Invalid URL", http.StatusBadRequest)
+	var request Request
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&request)
+	if err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 
-	id := parts[2]
-	if id == "" {
-		http.Error(w, "Invalid URL", http.StatusBadRequest)
-		return
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(getResponse(request))
+}
+
+func getResponse(request Request) Response {
+	failureResponse := Response{
+		Message: "Unable to shorten URL",
+		Status:  "failure",
 	}
 
-	url, _ := db.UrlById(id)
+	id, err := generateId()
+	if err != nil {
+		return failureResponse
+	}
 
-	http.Redirect(w, r, url.Url, http.StatusFound)
+	err = db.AddUrl(db.URL{Id: id, Url: request.Url})
+	if err != nil {
+		return failureResponse
+	}
+
+	domain := utils.GetDomain()
+	return Response{
+		Message: fmt.Sprintf("%s/l/%s", domain, id),
+		Status:  "success",
+	}
+}
+
+func generateId() (string, error) {
+	var id string
+	var exists bool
+	attempts := 10
+	for i := 0; i < attempts; i++ {
+		id = utils.GenerateId()
+		exists, _ = db.IDExists(id)
+		if !exists {
+			return id, nil
+		}
+	}
+	return "", fmt.Errorf("failed to generate ID after %d attempts", attempts)
 }
