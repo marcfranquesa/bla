@@ -6,7 +6,16 @@ import (
 	"strings"
 )
 
-func Redirect(w http.ResponseWriter, r *http.Request) {
+type Request struct {
+	Url string `json:"url"`
+}
+
+type Response struct {
+	Message string `json:"message"`
+	Status  string `json:"status"`
+}
+
+func PostUrl(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 
 	parts := strings.Split(path, "/")
