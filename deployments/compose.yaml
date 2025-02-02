@@ -15,6 +15,7 @@ services:
     depends_on:
       - db
     environment:
+      DOMAIN: ${DOMAIN}
       PORT: ${SERVER_PORT}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
