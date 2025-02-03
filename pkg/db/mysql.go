@@ -34,7 +34,7 @@ func Connect() error {
 	return conn.Ping()
 }
 
-func AddUrl(url URL) error {
+func InsertUrl(url URL) error {
 	_, err := conn.Exec("INSERT INTO urls (id, url) VALUES (?, ?)", url.Id, url.Url)
 	if err == nil {
 		log.Printf("Inserted URL: %s with ID: %s into DB.", url.Url, url.Id)
