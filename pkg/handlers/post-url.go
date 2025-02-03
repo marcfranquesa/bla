@@ -13,11 +13,6 @@ type Request struct {
 	Url string `json:"url"`
 }
 
-type Response struct {
-	Message string `json:"message"`
-	Status  string `json:"status"`
-}
-
 func PostUrl(w http.ResponseWriter, r *http.Request) {
 	var request Request
 	decoder := json.NewDecoder(r.Body)
@@ -27,27 +22,24 @@ func PostUrl(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
+	response := getResponse(request.Url)
+
+	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(getResponse(request.Url))
+	fmt.Fprintln(w, response)
 }
 
-func getResponse(url string) Response {
-	failureResponse := Response{
-		Message: "Unable to shorten URL",
-		Status:  "failure",
-	}
-
+func getResponse(url string) string {
 	id := utils.GenerateId(url, 3)
 
 	used, err := db.IsIDUsed(id, url)
 	if err != nil {
 		log.Printf("Failed to add URL '%s': %v.", url, err)
-		return failureResponse
+		return "Error"
 	}
 	if used {
 		log.Printf("ID '%s' exists with a different URL than '%s'", id, url)
-		return failureResponse
+		return "Error: try with a longer length"
 	}
 
 	inserted, err := db.IsIDInserted(id)
@@ -56,8 +48,5 @@ func getResponse(url string) Response {
 	}
 
 	domain := utils.GetDomain()
-	return Response{
-		Message: fmt.Sprintf("%s/l/%s", domain, id),
-		Status:  "success",
-	}
+	return fmt.Sprintf("%s/l/%s", domain, id)
 }
