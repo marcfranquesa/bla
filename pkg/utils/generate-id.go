@@ -1,25 +1,38 @@
 package utils
 
 import (
-	"crypto/rand"
+	"crypto/sha256"
 	"math/big"
+	"strings"
 )
 
 const charset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-func GenerateId() string {
-	id, _ := generateRandomString(3)
-	return id
+func GenerateId(s string, length int) string {
+	data := []byte(s)
+
+	hash := sha256.New()
+	hash.Write(data)
+	hashedData := hash.Sum(nil)
+	return encode(hashedData)[:length]
 }
 
-func generateRandomString(length int) (string, error) {
-	var result string
-	for i := 0; i < length; i++ {
-		idx, err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
-		if err != nil {
-			return "", err
-		}
-		result += string(charset[idx.Int64()])
+func encode(data []byte) string {
+	var result strings.Builder
+	num := new(big.Int).SetBytes(data)
+
+	base := big.NewInt(62)
+	zero := big.NewInt(0)
+
+	for num.Cmp(zero) > 0 {
+		mod := new(big.Int)
+		num.DivMod(num, base, mod)
+		result.WriteByte(charset[mod.Int64()])
 	}
-	return result, nil
+
+	if result.Len() == 0 {
+		result.WriteByte(charset[0])
+	}
+
+	return result.String()
 }

@@ -38,35 +38,26 @@ func getResponse(url string) Response {
 		Status:  "failure",
 	}
 
-	id, err := generateId()
-	if err != nil {
-		return failureResponse
-	}
+	id := utils.GenerateId(url, 3)
 
-	err = db.AddUrl(db.URL{Id: id, Url: url})
+	used, err := db.IsIDUsed(id, url)
 	if err != nil {
 		log.Printf("Failed to add URL '%s': %v.", url, err)
 		return failureResponse
 	}
-	log.Printf("Added URL '%s' with ID '%s'.", url, id)
+	if used {
+		log.Printf("ID '%s' exists with a different URL than '%s'", id, url)
+		return failureResponse
+	}
+
+	inserted, err := db.IsIDInserted(id)
+	if !inserted {
+		db.AddUrl(db.URL{Id: id, Url: url})
+	}
 
 	domain := utils.GetDomain()
 	return Response{
 		Message: fmt.Sprintf("%s/l/%s", domain, id),
 		Status:  "success",
 	}
-}
-
-func generateId() (string, error) {
-	var id string
-	var exists bool
-	attempts := 10
-	for i := 0; i < attempts; i++ {
-		id = utils.GenerateId()
-		exists, _ = db.IDExists(id)
-		if !exists {
-			return id, nil
-		}
-	}
-	return "", fmt.Errorf("failed to generate ID after %d attempts", attempts)
 }
