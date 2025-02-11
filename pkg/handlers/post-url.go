@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/marcfranquesa/bla/pkg/config"
 	"github.com/marcfranquesa/bla/pkg/db"
 	"github.com/marcfranquesa/bla/pkg/utils"
 	"log"
@@ -13,7 +14,7 @@ type Request struct {
 	Url string `json:"url"`
 }
 
-func PostUrl(w http.ResponseWriter, r *http.Request) {
+func PostUrl(w http.ResponseWriter, r *http.Request, cfg config.ServerConfig) {
 	var request Request
 	decoder := json.NewDecoder(r.Body)
 
@@ -27,7 +28,7 @@ func PostUrl(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := getResponse(request.Url)
+	response, err := getResponse(request.Url, cfg)
 	if err != nil {
 		http.Error(w, response, http.StatusInternalServerError)
 		return
@@ -38,7 +39,7 @@ func PostUrl(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, response)
 }
 
-func getResponse(url string) (string, error) {
+func getResponse(url string, cfg config.ServerConfig) (string, error) {
 	id := utils.GenerateId(url, 4)
 
 	used, err := db.IsIDUsed(id, url)
@@ -66,6 +67,5 @@ func getResponse(url string) (string, error) {
 		}
 	}
 
-	domain := utils.GetDomain()
-	return fmt.Sprintf("%s/l/%s", domain, id), nil
+	return fmt.Sprintf("%s/l/%s", cfg.Domain, id), nil
 }

@@ -1,6 +1,8 @@
 /Dockerfile
 /compose.yaml
 
+.env
+
 bin
 
 deploy.md

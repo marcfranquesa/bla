@@ -2,9 +2,10 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/go-sql-driver/mysql"
+	"github.com/marcfranquesa/bla/pkg/config"
 	"log"
-	"os"
 	"sync"
 )
 
@@ -18,17 +19,17 @@ type URL struct {
 	Url string
 }
 
-func Connect() error {
+func Connect(cfg config.DatabaseConfig) error {
 	once.Do(func() {
-		cfg := mysql.Config{
-			User:   os.Getenv("MYSQL_USER"),
-			Passwd: os.Getenv("MYSQL_PASSWORD"),
+		sql_cfg := mysql.Config{
+			User:   cfg.User,
+			Passwd: cfg.Password,
 			Net:    "tcp",
-			Addr:   os.Getenv("MYSQL_ADDRESS"),
-			DBName: os.Getenv("MYSQL_DATABASE"),
+			Addr:   fmt.Sprintf("%s:%s", cfg.Host, cfg.Port),
+			DBName: cfg.Name,
 		}
 
-		conn, _ = sql.Open("mysql", cfg.FormatDSN())
+		conn, _ = sql.Open("mysql", sql_cfg.FormatDSN())
 	})
 
 	return conn.Ping()

@@ -1,13 +1,14 @@
 package routes
 
 import (
+	"github.com/marcfranquesa/bla/pkg/config"
 	"github.com/marcfranquesa/bla/pkg/handlers"
 	"log"
 	"net/http"
 	"strings"
 )
 
-func SetupRoutes() {
+func SetupRoutes(cfg config.ServerConfig) {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		ip := r.Header.Get("X-Forwarded-For")
 		if ip != "" {
@@ -20,7 +21,7 @@ func SetupRoutes() {
 		if r.Method == http.MethodGet {
 			handlers.ServeStaticFiles(w, r)
 		} else if r.Method == http.MethodPost {
-			handlers.PostUrl(w, r)
+			handlers.PostUrl(w, r, cfg)
 		} else {
 			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		}
