@@ -20,6 +20,7 @@ func main() {
 		time.Sleep(2 * time.Second)
 	}
 	log.Printf("Successfully connected to database.")
+	defer db.Close()
 
 	routes.SetupRoutes(cfg.Server)
 

@@ -35,6 +35,13 @@ func Connect(cfg config.DatabaseConfig) error {
 	return conn.Ping()
 }
 
+func Close() error {
+    if conn != nil {
+        return conn.Close()
+    }
+    return nil
+}
+
 func InsertUrl(url URL) error {
 	_, err := conn.Exec("INSERT INTO urls (id, url) VALUES (?, ?)", url.Id, url.Url)
 	if err == nil {
