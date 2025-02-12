@@ -36,10 +36,10 @@ func Connect(cfg config.DatabaseConfig) error {
 }
 
 func Close() error {
-    if conn != nil {
-        return conn.Close()
-    }
-    return nil
+	if conn != nil {
+		return conn.Close()
+	}
+	return nil
 }
 
 func InsertUrl(url URL) error {
