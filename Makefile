@@ -1,7 +1,7 @@
 CMD := ./cmd/bla
 BINARY := bla.o
 
-all: run_build
+all:
 
 format:
 	@go fmt ./...
@@ -9,13 +9,7 @@ format:
 test:
 	@go test ./...
 
-build:
-	@go build -o=./bin/${BINARY} ${CMD}
+mod:
+	@docker exec -it bla-moderation /tui
 
-run:
-	@go run ${CMD}
-
-run_build: build
-	@./bin/${BINARY}
-
-.PHONY: all format build run run_build test
+.PHONY: all format test mod
