@@ -2,12 +2,14 @@ module github.com/marcfranquesa/bla
 
 go 1.23.4
 
-require github.com/go-sql-driver/mysql v1.8.1
+require (
+	github.com/charmbracelet/bubbletea v1.3.3
+	github.com/go-sql-driver/mysql v1.8.1
+)
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
-	github.com/charmbracelet/bubbletea v1.3.3 // indirect
 	github.com/charmbracelet/lipgloss v1.0.0 // indirect
 	github.com/charmbracelet/x/ansi v0.8.0 // indirect
 	github.com/charmbracelet/x/term v0.2.1 // indirect
@@ -22,5 +24,5 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	golang.org/x/sync v0.11.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
-	golang.org/x/text v0.3.8 // indirect
+	golang.org/x/text v0.8.0 // indirect
 )
