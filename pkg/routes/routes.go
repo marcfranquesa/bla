@@ -1,11 +1,12 @@
 package routes
 
 import (
-	"github.com/marcfranquesa/bla/pkg/config"
-	"github.com/marcfranquesa/bla/pkg/handlers"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/marcfranquesa/bla/pkg/config"
+	"github.com/marcfranquesa/bla/pkg/handlers"
 )
 
 func SetupRoutes(cfg config.ServerConfig) {

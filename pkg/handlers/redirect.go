@@ -1,9 +1,10 @@
 package handlers
 
 import (
-	"github.com/marcfranquesa/bla/pkg/db"
 	"net/http"
 	"strings"
+
+	"github.com/marcfranquesa/bla/pkg/db"
 )
 
 func Redirect(w http.ResponseWriter, r *http.Request) {

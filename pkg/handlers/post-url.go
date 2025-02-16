@@ -3,14 +3,15 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/marcfranquesa/bla/pkg/config"
-	"github.com/marcfranquesa/bla/pkg/db"
-	"github.com/marcfranquesa/bla/pkg/utils"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/marcfranquesa/bla/pkg/config"
+	"github.com/marcfranquesa/bla/pkg/db"
+	"github.com/marcfranquesa/bla/pkg/utils"
 )
 
 type Request struct {
@@ -80,7 +81,7 @@ func getResponse(url string, cfg config.ServerConfig) (string, error) {
 	}
 
 	if !inserted {
-		err = db.InsertUrl(db.URL{Id: id, Url: url})
+		err = db.InsertUrl(id, url)
 		if err != nil {
 			log.Printf("Error inserting URL '%s': %v", url, err)
 			return "Failed to insert URL", err

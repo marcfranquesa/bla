@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/marcfranquesa/bla/pkg/config"
-	"github.com/marcfranquesa/bla/pkg/db"
-	"github.com/marcfranquesa/bla/pkg/routes"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/marcfranquesa/bla/pkg/config"
+	"github.com/marcfranquesa/bla/pkg/db"
+	"github.com/marcfranquesa/bla/pkg/routes"
 )
 
 func main() {
