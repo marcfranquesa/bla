@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -37,7 +38,7 @@ func main() {
 }
 
 func initialModel() model {
-	urls, err := db.GetAll()
+	urls, err := db.GetAllURLs()
 	if err != nil {
 		log.Fatalf("Failed to get urls: %v.", err)
 	}
@@ -56,18 +57,33 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 
 		switch msg.String() {
-
-		case "ctrl+c", "q":
+		case "ctrl+c", "q", "esc":
 			return m, tea.Quit
 
 		case "up", "k":
 			if m.cursor > 0 {
 				m.cursor--
 			}
-
 		case "down", "j":
 			if m.cursor < len(m.urls)-1 {
 				m.cursor++
+			}
+		case "d":
+			if m.cursor < len(m.urls) {
+				url := m.urls[m.cursor]
+				db.DeleteURL(url.Id)
+				m.urls = append(m.urls[:m.cursor], m.urls[m.cursor+1:]...)
+				if m.cursor > 0 {
+					m.cursor--
+				}
+			}
+		case "c", "v", "m":
+			if m.cursor < len(m.urls) {
+				url := m.urls[m.cursor]
+				if err := db.VerifyURL(url.Id); err != nil {
+					log.Printf("Failed to mark URL as verified: %v", err)
+				}
+				m.urls[m.cursor].Verified = 1
 			}
 		}
 	}
@@ -76,7 +92,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	s := "DB\n\n"
+	s := ""
+	s += fmt.Sprintf("%-1s %-5s %-60s %-9s\n", " ", "ID", "URL", "Verified")
+	s += strings.Repeat("-", 77) + "\n"
 
 	for i, choice := range m.urls {
 		cursor := " "
@@ -84,10 +102,8 @@ func (m model) View() string {
 			cursor = ">"
 		}
 
-		s += fmt.Sprintf("%s ID: %s, URL: %s \n", cursor, choice.Id, choice.Url)
+		s += fmt.Sprintf("%-1s %-5s %-60s %-9d\n", cursor, choice.Id, choice.Url, choice.Verified)
 	}
-
-	s += "\nPress q to quit.\n"
 
 	return s
 }

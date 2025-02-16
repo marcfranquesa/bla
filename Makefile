@@ -1,7 +1,7 @@
 CMD := ./cmd/bla
 BINARY := bla.o
 
-all:
+all: deploy
 
 format:
 	@go fmt ./...
@@ -9,7 +9,13 @@ format:
 test:
 	@go test ./...
 
+deploy:
+	@./scripts/deploy.mysql.moderation.sh
+
 mod:
 	@docker exec -it bla-moderation /tui
 
-.PHONY: all format test mod
+data:
+	./scripts/add-dummy-data.sh
+
+.PHONY: all format test deploy mod data
