@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VOLUME_NAME="mysql_data"
+VOLUME_NAME="bla_data"
 
 docker volume inspect $VOLUME_NAME > /dev/null 2>&1 || docker volume create $VOLUME_NAME
 

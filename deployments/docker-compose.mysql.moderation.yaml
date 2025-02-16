@@ -9,7 +9,7 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_TCP_PORT: ${DB_PORT}
     volumes:
-      - mysql_data:/var/lib/mysql
+      - bla_data:/var/lib/mysql
       - ./init/db:/docker-entrypoint-initdb.d
   server:
     container_name: bla-server
@@ -42,5 +42,5 @@ services:
       DB_HOST: db
 
 volumes:
-  mysql_data:
+  bla_data:
     external: true
