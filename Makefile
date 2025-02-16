@@ -6,8 +6,14 @@ all: deploy
 format:
 	@go fmt ./...
 
-test:
+test-sql:
+	@sqlfluff lint init/db --dialect mysql
+
+test-go:
+	@if [ "$$(gofmt -l . | wc -l)" -gt 0 ]; then exit 1; fi
 	@go test ./...
+
+test: test-sql test-go
 
 deploy:
 	@./scripts/deploy.mysql.moderation.sh
@@ -18,4 +24,4 @@ mod:
 data:
 	./scripts/add-dummy-data.sh
 
-.PHONY: all format test deploy mod data
+.PHONY: all format test-sql test-go test deploy mod data
