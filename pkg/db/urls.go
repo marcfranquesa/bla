@@ -33,7 +33,7 @@ func GetAllURLs() ([]URL, error) {
 }
 
 func InsertUrl(id string, urlStr string) error {
-	query := fmt.Sprintf("INSERT INTO %s (id, url, verified) VALUES (?, ?, 0)", table)
+	query := fmt.Sprintf("INSERT INTO %s (id, url) VALUES (?, ?)", table)
 	_, err := conn.Exec(query, id, urlStr)
 	if err == nil {
 		log.Printf("Inserted URL: %s with ID: %s into DB.", id, urlStr)
