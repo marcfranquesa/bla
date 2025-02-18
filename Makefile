@@ -7,7 +7,7 @@ format:
 	@go fmt ./...
 
 test-sql:
-	@sqlfluff lint init/db --dialect mysql
+	@sqlfluff lint db/init --dialect mysql
 
 test-go:
 	@if [ "$$(gofmt -l . | wc -l)" -gt 0 ]; then exit 1; fi
