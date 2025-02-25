@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"crypto/sha256"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,7 +13,6 @@ import (
 
 	"github.com/marcfranquesa/bla/pkg/config"
 	"github.com/marcfranquesa/bla/pkg/db"
-	"github.com/marcfranquesa/bla/pkg/utils"
 )
 
 type Request struct {
@@ -61,7 +62,7 @@ func validateURL(urlStr string) bool {
 }
 
 func getResponse(url string, cfg config.ServerConfig) (string, error) {
-	id := utils.GenerateId(url, 4)
+	id := generateId(url, 4)
 
 	used, err := db.IsIDUsed(id, url)
 	if err != nil {
@@ -89,4 +90,13 @@ func getResponse(url string, cfg config.ServerConfig) (string, error) {
 	}
 
 	return fmt.Sprintf("%s/l/%s", cfg.Domain, id), nil
+}
+
+func generateId(s string, length int) string {
+	data := []byte(s)
+
+	hash := sha256.New()
+	hash.Write(data)
+	hashedData := hash.Sum(nil)
+	return base64.RawURLEncoding.EncodeToString(hashedData)[:length]
 }
