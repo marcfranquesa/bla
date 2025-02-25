@@ -10,11 +10,12 @@ const table = "urls"
 type URL struct {
 	Id       string
 	Url      string
+	Token    string
 	Verified uint8
 }
 
 func GetAllURLs() ([]URL, error) {
-	query := fmt.Sprintf("SELECT id, url, verified FROM %s", table)
+	query := fmt.Sprintf("SELECT id, url, token, verified FROM %s", table)
 	rows, err := conn.Query(query)
 	if err != nil {
 		return nil, err
@@ -24,7 +25,7 @@ func GetAllURLs() ([]URL, error) {
 	var urls []URL
 	for rows.Next() {
 		var url URL
-		if err := rows.Scan(&url.Id, &url.Url, &url.Verified); err != nil {
+		if err := rows.Scan(&url.Id, &url.Url, &url.Token, &url.Verified); err != nil {
 			return nil, err
 		}
 		urls = append(urls, url)
@@ -32,9 +33,9 @@ func GetAllURLs() ([]URL, error) {
 	return urls, rows.Err()
 }
 
-func InsertUrl(id string, urlStr string) error {
-	query := fmt.Sprintf("INSERT INTO %s (id, url) VALUES (?, ?)", table)
-	_, err := conn.Exec(query, id, urlStr)
+func InsertUrl(id string, urlStr string, token string) error {
+	query := fmt.Sprintf("INSERT INTO %s (id, url, token) VALUES (?, ?, ?)", table)
+	_, err := conn.Exec(query, id, urlStr, token)
 	if err == nil {
 		log.Printf("Inserted URL: %s with ID: %s into DB.", id, urlStr)
 	}
@@ -53,13 +54,20 @@ func VerifyURL(id string) error {
 	return err
 }
 
-func UrlByID(id string) (URL, error) {
-	query := fmt.Sprintf("SELECT * FROM %s WHERE id = ?", table)
+func UrlByID(id string) (string, error) {
+	query := fmt.Sprintf("SELECT url FROM %s WHERE id = ?", table)
 	row := conn.QueryRow(query, id)
-
-	var url URL
-	err := row.Scan(&url.Id, &url.Url, &url.Verified)
+	var url string
+	err := row.Scan(&url)
 	return url, err
+}
+
+func TokenByID(id string) (string, error) {
+	query := fmt.Sprintf("SELECT token FROM %s WHERE id = ?", table)
+	row := conn.QueryRow(query, id)
+	var token string
+	err := row.Scan(&token)
+	return token, err
 }
 
 func IsIDInserted(id string) (bool, error) {

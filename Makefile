@@ -18,10 +18,14 @@ test: test-sql test-go
 deploy:
 	@./scripts/deploy.mysql.moderation.sh
 
+clean:
+	@docker-compose down
+	@docker volume rm bla_data
+
 mod:
 	@docker exec -it bla-moderation /tui
 
 data:
-	./scripts/add-dummy-data.sh
+	@./scripts/add-dummy-data.sh
 
-.PHONY: all format test-sql test-go test deploy mod data
+.PHONY: all format test-sql test-go test deploy clean mod data

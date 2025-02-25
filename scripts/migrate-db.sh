@@ -3,7 +3,7 @@
 source .env
 
 CONTAINER="bla-db"
-MIGRATION_SQL_DIR="db/migrations"
+MIGRATION_SQL_DIR="db/migrations/token"
 
 SQL_FILES=$(find "$MIGRATION_SQL_DIR" -type f -name "*.sql" | sort)
 
